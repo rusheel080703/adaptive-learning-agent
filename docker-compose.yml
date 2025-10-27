@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # 1. FastAPI Application Service (API)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: adaptive-agent-api
+    ports:
+      - "8000:8080" # Map host 8000 to container 8080
+    volumes:
+      - ./app:/app/app # Live mounting app code for easier development
+    environment:
+      # Load variables from the .env file
+      REDIS_URL: redis://redis:6379  # Correct Docker network reference
+      OLLAMA_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL_NAME: mistral:7b
+    # This is crucial for Mac/Windows to talk to the host's Ollama service
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - redis # Ensure redis starts before the API attempts to connect
+
+  # 2. Redis Cache and Pub/Sub Broker Service
+  redis:
+    image: redis:7-alpine
+    container_name: adaptive-redis
+    ports:
+      - "6379:6379" # Map host 6379 to container 6379
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data # Persist Redis data across restarts
+
+  # 3. Ollama LLM Runtime (Running on the Host Machine)
+  # NOTE: Ollama is assumed to be installed and running on the host OS
+  # We include it here mainly for documentation and networking clarity.
+  # The API service connects to it via 'host.docker.internal'.
+  # For Windows, ensure Ollama allows external network access.
+
+volumes:
+  redis_data:
