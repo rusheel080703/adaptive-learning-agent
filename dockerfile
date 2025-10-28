@@ -49,8 +49,16 @@ COPY --from=builder /usr/local/lib /usr/local/lib
 
 # Copy application files and config
 COPY ./app /app/app
-COPY .env .
-COPY .env.example .
+# REMOVE the line 'COPY ./static /app/static' as it assumes the static folder is at the root.
+# REMOVE the ambiguous line: COPY . /app/static 
+
+# FIX: Copy the templates folder specifically to the correct path
+# NOTE: Templates folder is inside the app directory in your local structure
+COPY ./app/templates /app/app/templates 
+
+# Copy environment files
+COPY .env /app/.env  
+COPY .env.example /app/.env.example
 
 # Expose the application port
 EXPOSE 8080

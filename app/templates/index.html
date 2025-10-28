@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Learning Agent: Real-Time Arena</title>
+    <script src="/static/js/app.js" defer></script>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        #quizIdInput { width: 250px; padding: 8px; }
+        #connectBtn { padding: 8px 15px; cursor: pointer; }
+        #messages { border: 1px solid #ccc; list-style: none; padding: 10px; height: 300px; overflow-y: scroll; margin-top: 15px; }
+        .update { background: #e0f7fa; margin: 5px 0; padding: 5px; border-radius: 4px; }
+        .alert { background: #ffdddd; color: #d8000c; }
+        .success { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+    <h1>Adaptive Learning Arena ⚡</h1>
+    <p>1. Start Quiz (Run POST /quizzes in terminal to generate ID)</p>
+    <p>2. Connect to the Room:</p>
+    <input type="text" id="quizIdInput" value="test_id" placeholder="Enter Quiz ID (e.g., from POST response)" />
+    <button id="connectBtn">Connect to Quiz Room</button>
+    <p id="status">Status: Disconnected</p>
+
+    <h2>Live Updates (Scores & Quizzes):</h2>
+    <ul id="messages"></ul>
+
+    </body>
+</html>

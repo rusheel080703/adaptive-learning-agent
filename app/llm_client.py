@@ -123,7 +123,7 @@ async def call_llm_api(model_name: str, prompt: str, timeout: int) -> dict:
              raise ValueError("Unexpected error processing LLM output.") from e
 
 
-async def call_ollama_or_fallback(topic: str, difficulty: str, timeout: int = 30) -> Quiz: # Increased timeout
+async def call_ollama_or_fallback(topic: str, difficulty: str, timeout: int = 60) -> Quiz: # Increased timeout
     """
     Tries primary LLM (Mistral), logs detailed errors, then uses Deterministic Template.
     """
