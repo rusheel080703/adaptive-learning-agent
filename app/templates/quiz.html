@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Arena - Playing</title>
+    <script src="/static/js/quiz.js" defer></script>
+    <style> /* Basic Styling */
+        body { font-family: sans-serif; display: flex; max-width: 1200px; margin: 20px auto; gap: 20px; flex-wrap: wrap;}
+        #setupArea, #quizArea, #leaderboardArea { flex: 1; min-width: 300px; border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 10px;}
+        #questionContainer { margin-top: 20px; }
+        .question-card { border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 5px; background-color: #f9f9f9; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; cursor: pointer; text-align: left; background-color: #e7f3ff; border: 1px solid #b3d7ff; border-radius: 4px; transition: background-color 0.2s; }
+        .options button:hover:not(:disabled) { background-color: #cce5ff; }
+        .options button.selected { background-color: #b3d7ff; border-color: #80bfff; }
+        .options button.correct { background-color: #d4edda !important; border-color: #c3e6cb !important; color: #155724; }
+        .options button.incorrect { background-color: #f8d7da !important; border-color: #f5c6cb !important; color: #721c24; }
+        .options button:disabled { cursor: not-allowed; opacity: 0.7; }
+        #leaderboard li { padding: 5px 0; border-bottom: 1px solid #eee; }
+        #leaderboard li:last-child { border-bottom: none; }
+        #events li { font-size: 0.9em; color: #555; padding: 2px 0; }
+        .hidden { display: none; }
+        #feedback { margin-top: 15px; font-weight: bold; }
+        #nextQuestionBtn { padding: 10px 15px; margin-top: 15px; cursor: pointer; } /* Now visible by default, JS will hide it */
+    </style>
+</head>
+<body>
+    <div id="setupArea">
+        <h2>Join Quiz</h2>
+        <input type="text" id="quizIdInput" placeholder="Enter Quiz ID">
+        <input type="text" id="playerNameInput" placeholder="Enter Your Name">
+        <button id="joinBtn">Join Quiz</button>
+        <p id="status">Status: Waiting to join...</p>
+    </div>
+
+    <div id="quizArea" class="hidden">
+        <h2 id="quizTopic">Quiz Topic</h2>
+        <p>Player: <strong id="currentPlayerName"></strong> | Score: <strong id="currentScore">0</strong></p>
+        <div id="questionContainer">
+            <p>Waiting for quiz data...</p>
+        </div>
+        <p id="feedback"></p>
+        <button id="nextQuestionBtn" class="hidden">Next Question</button>
+    </div>
+
+    <div id="leaderboardArea">
+        <h3>Leaderboard</h3>
+        <ul id="leaderboard">
+            <li>Loading...</li>
+        </ul>
+        <h3>Live Events</h3>
+        <ul id="events">
+            <li>Waiting for events...</li>
+        </ul>
+    </div>
+</body>
+</html>

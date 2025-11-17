@@ -1,17 +1,15 @@
-# In app/schemas.py
-from pydantic import BaseModel, Field
-from typing import List, Optional
+# app/schemas.py
+from pydantic import BaseModel, Field, conint
+from typing import List, Optional, Dict
 
+# --- Existing Day 1 Schemas ---
 class Question(BaseModel):
-    id: str = Field(..., description="unique id for question")
-    # >>>>> Field name is 'question_text' <<<<<
-    question_text: str 
-    # >>>>> Field name is 'options' <<<<<
-    options: List[str] = Field(..., min_items=4, max_items=4) 
-    # >>>>> Field name is 'correct_answer_index' <<<<<
-    correct_answer_index: int = Field(..., ge=0, le=3) 
+    id: str = Field(..., description="Unique ID for the question (UUID string)")
+    question_text: str
+    options: List[str] = Field(..., min_length=4, max_length=4)
+    correct_answer_index: conint(ge=0, le=3) # Correct field name
     explanation: Optional[str] = None
-    metadata: Optional[dict] = {}
+    metadata: Optional[Dict] = {}
 
 class Quiz(BaseModel):
     quiz_id: str
@@ -20,4 +18,31 @@ class Quiz(BaseModel):
     questions: List[Question]
     time_limit_seconds: Optional[int] = 600
     created_by: Optional[str] = None
-# ... other schemas ...
+
+class QuizGenerationRequest(BaseModel): # Added for clarity in POST /quizzes
+    topic: str
+    difficulty: str = Field(default="medium", pattern="^(easy|medium|hard)$") # Example pattern
+
+# --- NEW Day 3/4 Schemas ---
+class AnswerSubmission(BaseModel):
+    quiz_id: str
+    player_name: str # Using simple name for Day 3
+    question_id: str # Question ID is a string
+    selected_option_index: conint(ge=0, le=3) # Index chosen by player
+
+class PlayerScore(BaseModel): # Model for leaderboard data
+    player_name: str
+    score: int
+
+class LeaderboardEntry(BaseModel):
+    player: str
+    score: int
+
+class Leaderboard(BaseModel):
+    quiz_id: str
+    leaderboard: List[LeaderboardEntry]
+
+# --- Schemas for WebSocket Messages (Good Practice) ---
+class WebSocketMessage(BaseModel):
+    type: str
+    data: Dict
