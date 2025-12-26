@@ -19,9 +19,13 @@ class Quiz(BaseModel):
     time_limit_seconds: Optional[int] = 600
     created_by: Optional[str] = None
 
-class QuizGenerationRequest(BaseModel): # Added for clarity in POST /quizzes
+# app/schemas.py (Update this specific class)
+class QuizGenerationRequest(BaseModel):
     topic: str
-    difficulty: str = Field(default="medium", pattern="^(easy|medium|hard)$") # Example pattern
+    # We keep difficulty as a manua l override option, but adaptive logic might ignore it
+    difficulty: str = Field(default="medium", pattern="^(easy|medium|hard)$")
+    # NEW: Optional player name to trigger adaptive logic
+    player_name: Optional[str] = None
 
 # --- NEW Day 3/4 Schemas ---
 class AnswerSubmission(BaseModel):

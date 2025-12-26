@@ -169,6 +169,8 @@ class QuizManager:
         except Exception:
             logger.exception(f"Failed to validate question data from Redis for question {question_id}")
             return None
+        
+        logger.info(f"DEBUG: Question '{question.question_text}' | Correct Index: {question.correct_answer_index} | You Clicked: {selected_option_index}")
 
         is_correct = (question.correct_answer_index == selected_option_index)
 
