@@ -50,3 +50,18 @@ class Leaderboard(BaseModel):
 class WebSocketMessage(BaseModel):
     type: str
     data: Dict
+    
+    
+
+class TopicMastery(BaseModel):
+    topic: str
+    accuracy: float
+    attempts: int
+    recommended_difficulty: str
+    confidence_level: str  # e.g., "Beginner", "Intermediate"
+
+class PlayerAnalyticsResponse(BaseModel):
+    player_name: str
+    total_quizzes: int
+    average_score: float
+    topic_breakdown: List[TopicMastery]

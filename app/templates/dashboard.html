@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Learning Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 2rem auto; background: #f8f9fa; color: #333; }
+        .container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        .controls { display: flex; gap: 10px; margin-bottom: 2rem; }
+        input { padding: 12px; flex-grow: 1; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+        button { padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; transition: background 0.2s; }
+        button:hover { background: #0056b3; }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: #f8f9fa; padding: 1.5rem; border-radius: 8px; text-align: center; border: 1px solid #e9ecef; }
+        .stat-label { font-size: 0.9rem; color: #6c757d; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-val { font-size: 2.5rem; font-weight: bold; color: #212529; margin-top: 0.5rem; }
+        
+        /* Charts */
+        .chart-section { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        
+        .error { color: #dc3545; background: #f8d7da; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Student Analytics Center</h1>
+        
+        <div class="controls">
+            <input type="text" id="playerName" placeholder="Enter Player Name (e.g. Rusheel)" value="Rusheel">
+            <button onclick="loadDashboard()">Load Analytics</button>
+        </div>
+        <div id="errorMessage" class="error"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Quizzes</div>
+                <div id="totalQuizzes" class="stat-val">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average Accuracy</div>
+                <div id="avgScore" class="stat-val">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Strongest Topic</div>
+                <div id="bestTopic" class="stat-val">-</div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div>
+                <h2>🏆 Mastery by Topic</h2>
+                <div class="chart-container">
+                    <canvas id="topicChart"></canvas>
+                </div>
+            </div>
+            <div>
+                <h2>📈 Progress Over Time</h2>
+                <div class="chart-container">
+                    <canvas id="scoreChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

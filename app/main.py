@@ -13,6 +13,9 @@ from .models import Quiz as QuizModel
 # --- NEW IMPORTS ---
 from .services.adaptive_engine import AdaptiveEngine
 # -------------------
+from .services.analytics_service import AnalyticsService
+from .schemas import PlayerAnalyticsResponse
+
 
 import asyncio
 import uvicorn
@@ -49,9 +52,27 @@ async def startup_event():
 async def shutdown_event():
     await database.disconnect()
 
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+# --- NEW DASHBOARD ROUTE ---
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard_page(request: Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
+
+# --- NEW ANALYTICS API ROUTE ---
+@app.get("/analytics/player/{player_name}", response_model=PlayerAnalyticsResponse)
+async def get_player_analytics_endpoint(
+    player_name: str, 
+    db: AsyncSession = Depends(get_db_session)
+):
+    service = AnalyticsService(db)
+    data = await service.get_player_analytics(player_name)
+    if not data:
+        raise HTTPException(status_code=404, detail="Player stats not found")
+    return data
 
 @app.get("/quiz/{quiz_id}", response_class=HTMLResponse)
 async def get_quiz_page(request: Request, quiz_id: str):
