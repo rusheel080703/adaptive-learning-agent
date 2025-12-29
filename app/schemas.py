@@ -16,6 +16,7 @@ class Quiz(BaseModel):
     topic: str
     difficulty: str
     questions: List[Question]
+    strategy: str = "Standard"
     time_limit_seconds: Optional[int] = 600
     created_by: Optional[str] = None
 

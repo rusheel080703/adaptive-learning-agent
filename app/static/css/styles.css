@@ -1,0 +1,112 @@
+/* app/static/css/styles.css */
+
+:root {
+    --primary: #2563eb;       /* Professional Blue */
+    --primary-dark: #1e40af;
+    --success: #10b981;       /* Green */
+    --warning: #f59e0b;       /* Amber */
+    --danger: #ef4444;        /* Red */
+    --bg-color: #f3f4f6;      /* Light Gray Background */
+    --card-bg: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* --- Cards --- */
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+/* --- AI Insight Panel (The "Why") --- */
+.ai-insight-panel {
+    background: #eff6ff; /* Light Blue tint */
+    border-left: 5px solid var(--primary);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    display: none; /* Hidden by default */
+}
+
+.ai-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+}
+
+.ai-tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.tag {
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.tag-strategy { background: var(--primary); color: white; }
+.tag-diff { background: var(--text-muted); color: white; }
+
+/* --- Quiz UI --- */
+.question-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.options-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.option-btn {
+    padding: 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.option-btn:hover { border-color: var(--primary); background: #f0f9ff; }
+.option-btn.selected { border-color: var(--primary); background: #eff6ff; box-shadow: 0 0 0 2px var(--primary); }
+.option-btn.correct { border-color: var(--success); background: #ecfdf5; }
+.option-btn.wrong { border-color: var(--danger); background: #fef2f2; }
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+.btn-primary:hover { background-color: var(--primary-dark); }

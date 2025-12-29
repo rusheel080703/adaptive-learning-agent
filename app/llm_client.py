@@ -115,10 +115,19 @@ async def call_ollama_or_fallback(
         else:
             data = response_str
 
+        # Validate with Pydantic
         quiz = Quiz.model_validate(data)
-        logger.info("LLM generation successful.")
+        
+        # --- NEW: Stamp the strategy onto the quiz object ---
+        quiz.strategy = strategy 
+        # ----------------------------------------------------
+        
+        logger.info(f"LLM generation successful. Strategy used: {strategy}")
         return quiz
 
     except Exception as e:
         logger.warning(f"LLM failed: {e}. Using fallback.", exc_info=True)
-        return await deterministic_quiz_template(topic, difficulty)
+        # fallback also needs the strategy
+        fallback_quiz = await deterministic_quiz_template(topic, difficulty)
+        fallback_quiz.strategy = strategy
+        return fallback_quiz
