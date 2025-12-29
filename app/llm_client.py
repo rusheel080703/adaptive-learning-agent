@@ -74,47 +74,47 @@ async def call_llm_api(model_name: str, prompt: str, timeout: int) -> dict:
         resp.raise_for_status()
         return resp.json().get("response", "{}")
 
+# In app/llm_client.py
+
 async def call_ollama_or_fallback(
     topic: str, 
     difficulty: str, 
-    adaptive_data: Optional[Dict] = None, # <--- NEW PARAMETER
+    adaptive_data: Optional[Dict] = None,
+    strategy: str = "Standard",  # <--- NEW PARAMETER
     timeout: int = 60
 ) -> Quiz:
     """
-    Generates a quiz, optionally using adaptive player data to adjust the prompt.
+    Generates a quiz using adaptive data AND long-term strategy.
     """
     
-    # 1. Build the Adaptive Prompt
+    # 1. Build the Intelligent Prompt
+    full_prompt = f"Generate a {difficulty} quiz about '{topic}'."
+
+    # Add Day 5 Adaptive Context (Short-term performance)
     if adaptive_data:
-        # If we have player history, we override the request's difficulty
-        real_difficulty = adaptive_data.get("recommended_difficulty", difficulty)
-        advice = adaptive_data.get("adaptive_prompt_instruction", "")
-        accuracy = adaptive_data.get("accuracy", 0)
-        
-        full_prompt = (
-            f"Generate a {real_difficulty} quiz about '{topic}'. "
-            f"Context: The player has a historical accuracy of {accuracy}% on this topic. "
-            f"Instruction: {advice}. "
-            f"Ensure questions are tailored to this skill level."
-        )
-        logger.info(f"Using ADAPTIVE prompt for player {adaptive_data['player_name']}")
+        acc = adaptive_data.get("accuracy", 0)
+        full_prompt += f" Context: Player accuracy is {acc}%."
+
+    # Add Day 7 Strategic Memory (Long-term profile)
+    if strategy == "Concept-First":
+        full_prompt += " STRATEGY: The player is struggling. Focus on fundamental definitions. Provide clear, simple explanations. Avoid complex calculations."
+        logger.info(f"Applying Strategy: CONCEPT-FIRST for {topic}")
+    elif strategy == "Challenge-Mode":
+        full_prompt += " STRATEGY: The player is an expert. Ask complex, multi-step reasoning questions. Test edge cases."
+        logger.info(f"Applying Strategy: CHALLENGE-MODE for {topic}")
     else:
-        # Standard generic prompt
-        full_prompt = f"Generate a {difficulty} quiz about '{topic}' with 3 questions."
+        full_prompt += " STRATEGY: Standard balanced quiz."
 
     # 2. Call LLM
     try:
         response_str = await call_llm_api(OLLAMA_MODEL_NAME, full_prompt, timeout)
         
-        # Parse JSON
         if isinstance(response_str, str):
-            # Cleanup any markdown formatting if present
             clean_str = response_str.strip().strip('```json').strip('```')
             data = json.loads(clean_str)
         else:
             data = response_str
 
-        # Validate with Pydantic
         quiz = Quiz.model_validate(data)
         logger.info("LLM generation successful.")
         return quiz

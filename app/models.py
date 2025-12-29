@@ -39,3 +39,25 @@ class Answer(Base):
     submitted_at = Column(DateTime(timezone=True), server_default=func.now())
     
     player = relationship("Player", back_populates="answers")
+    
+class PlayerProfile(Base):
+    """
+    Long-term memory for a specific player.
+    Tracks persistent weaknesses and learning strategies.
+    """
+    __tablename__ = "player_profiles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    player_name = Column(String, unique=True, index=True)
+    
+    # Comma-separated list of topics where accuracy is consistently < 40%
+    weak_topics = Column(String, default="") 
+    
+    # Comma-separated list of topics where accuracy is > 80%
+    strong_topics = Column(String, default="")
+    
+    # The current AI teaching strategy (e.g., "Standard", "Concept-First", "Challenge")
+    current_strategy = Column(String, default="Standard")
+    
+    # Metadata for debugging
+    last_updated = Column(String) # Simple timestamp string

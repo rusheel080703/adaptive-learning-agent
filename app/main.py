@@ -16,7 +16,7 @@ from .services.adaptive_engine import AdaptiveEngine
 from .services.analytics_service import AnalyticsService
 from .schemas import PlayerAnalyticsResponse
 
-
+from .services.memory_service import MemoryService
 import asyncio
 import uvicorn
 import logging
@@ -102,28 +102,33 @@ async def create_quiz_endpoint(
     topic = request.topic
     difficulty = request.difficulty
     
-    # 1. Initialize Adaptive Context
     adaptive_data = None
-    
-    # 2. If player name is provided, calculate stats
-    if request.player_name:
-        logger.info(f"Calculating adaptive profile for {request.player_name} on topic {topic}")
-        engine_service = AdaptiveEngine(db)
-        adaptive_data = await engine_service.get_player_performance(request.player_name, topic)
-        
-        if adaptive_data:
-            logger.info(f"Adaptive Profile Found: Accuracy={adaptive_data['accuracy']}%, Recommended={adaptive_data['recommended_difficulty']}")
-        else:
-            logger.info("No history found for player. Using standard difficulty.")
+    strategy = "Standard" # Default
 
-    # 3. Call LLM with the extra context
+    if request.player_name:
+        # 1. Initialize Services
+        adaptive_service = AdaptiveEngine(db)
+        memory_service = MemoryService(db)
+
+        # 2. Update Long-Term Profile (The "Psychologist" runs analysis)
+        # We do this first so we have the latest strategy
+        profile = await memory_service.update_learning_profile(request.player_name)
+        if profile:
+            strategy = profile.current_strategy
+            logger.info(f"Loaded Profile for {request.player_name}: Strategy={strategy}, Weaknesses=[{profile.weak_topics}]")
+
+        # 3. Get Short-Term Stats
+        adaptive_data = await adaptive_service.get_player_performance(request.player_name, topic)
+
+    # 4. Call LLM with EVERYTHING (Topic + Stats + Strategy)
     quiz_pydantic: QuizSchema = await call_ollama_or_fallback(
         topic, 
         difficulty, 
-        adaptive_data=adaptive_data # Pass the stats!
+        adaptive_data=adaptive_data,
+        strategy=strategy # <--- Pass the strategy
     )
     
-    # 4. Save to DB (Standard logic)
+    # ... (Rest of the saving logic stays the same) ...
     try:
         existing_quiz = await db.get(QuizModel, quiz_pydantic.quiz_id)
         if not existing_quiz:
